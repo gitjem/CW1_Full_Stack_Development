@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CW1 Vue.js App</title>
+    <!-- Vue CDN link  -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- Font awesome link -->
+    <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <!-- CSS style -->
+    <link rel="stylesheet" href = "style.css">
+</head>
+<body>
+    <!-- Mounting -->
+    <div id="app">
+        <header>
+            <h1 v-text="sitename"></h1>
+        </header>
+
+        <!-- Sort controls -->
+        <div class="sort-controls">
+            <label>Sort by:</label>
+            <p><input type="radio" id="subject" value="subject" v-model="sortAttribute">
+            <label for="subject">Subject</label></p>
+            <p><input type="radio" id="location" value="location" v-model="sortAttribute">
+            <label for="location">Location</label></p>
+            <p><input type="radio" id="price" value="price" v-model="sortAttribute">
+            <label for="price">Price</label></p>
+            <p><input type="radio" id="spaces" value="spaces" v-model="sortAttribute">
+            <label for="spaces">Spaces</label></p>
+        <br>
+            <label>Order by:</label>
+            <p><input type="radio" id="ascending" value="asc" v-model="sortOrder">
+            <label for="ascending">Ascending</label></p>
+            <p><input type="radio" id="descending" value="desc" v-model="sortOrder">
+            <label for="descending">Descending</label></p>
+        </div>
+
+        <main>
+            <!-- Loop through lessons -->
+            <div v-for="(lesson, index) in sortedLessons" :key="index" class="lesson-card">
+                <div class="lesson-details">
+                    <p>Subject: {{lesson.subject}}</p>
+                    <p>Location: {{lesson.location}}</p>
+                    <p>Price: {{lesson.price}}</p>
+                    <p>Spaces left: {{lesson.spaces}}</p>
+                    <button v-on:click="addToCart" v-if="canAddToCart" id="add2cart_button">Add to Cart</button>
+                    <button disabled="disabled" v-else >Add to Cart</button>
+                </div>
+                <div class="lesson-icon">
+                    <i :class="lesson.icon"></i>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MAKING -->
+    <script type="text/javascript">
+        let webstore = new Vue({
+            el: '#app',
+            data: {
+                sitename: 'After School Club',
+                sortAttribute: 'subject', //set to default
+                sortOrder: 'asc',
+                lessons: [
+                    { subject: "Math", location: "London", price: 100, spaces: 5, icon: "fas fa-calculator" },
+                    { subject: "Science", location: "Birmingham", price: 120, spaces: 5, icon: "fas fa-flask" },
+                    { subject: "English", location: "Oxford", price: 90, spaces: 5, icon: "fas fa-feather-alt" },
+                    { subject: "History", location: "London", price: 80, spaces: 5, icon: "fas fa-landmark" },
+                    { subject: "Geography", location: "Liverpool", price: 95, spaces: 5, icon: "fas fa-globe" },
+                    { subject: "Art", location: "York", price: 70, spaces: 5, icon: "fas fa-paint-brush" },
+                    { subject: "Music", location: "Bristol", price: 110, spaces: 5, icon: "fas fa-music" },
+                    { subject: "Computer Science", location: "Oxford", price: 150, spaces: 5, icon: "fas fa-laptop-code" },
+                    { subject: "Drama", location: "Cambridge", price: 85, spaces: 5, icon: "fas fa-theater-masks" },
+                    { subject: "Physical Education", location: "Bristol", price: 60, spaces: 5, icon: "fas fa-basketball-ball" }
+                    ]
+                },
+                computed: {
+                    sortedLessons() {
+                    // Copy lessons array for sorting
+                    return this.lessons.slice().sort((a, b) => {
+                        let valueA = a[this.sortAttribute];
+                        let valueB = b[this.sortAttribute];
+
+                        // Compare strings case-insensitively
+                        if (typeof valueA === 'string') {
+                        valueA = valueA.toLowerCase();
+                        valueB = valueB.toLowerCase();
+                        }
+
+                        // if valueA should come before B, then return -1 when sorting in asc and 1 in desc
+                        //  if valueA should be after B, then return 1 when sorting in asc and -1 in desc
+                        // return 0 if they are equal, no change in order
+                        if (valueA < valueB) return this.sortOrder === 'asc' ? -1 : 1;
+                        if (valueA > valueB) return this.sortOrder === 'asc' ? 1 : -1;
+                        return 0;
+                    });
+                }
+            }
+     });
+    </script>
+</body>
+</html>
