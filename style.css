@@ -1,31 +1,39 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 20px;
+    background: #f9faff;
+    color: #333;
 }
 
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 20px;
+    padding: 17px 40px;
+    background: #1164e1;
+    color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    border-bottom: 3px solid #35408c;
 }
 
 header button {
-    background-color: #5768ba;
-    color: white;
+    background-color: #f0a535;
+    color: #000;
     border: none;
     margin-bottom: 22px;
     margin-right: 15px;
     font-size: 15px;
     padding: 10px 25px;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 6px;
+    font-weight: bolder;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
 header button:hover {
-    background-color: #3e4a83;
+    background-color: #e18e11;
+    transform: scale(1.05);
 }
 
 .content-wrap {
@@ -33,29 +41,40 @@ header button:hover {
     justify-content: center;
     align-items: flex-start;
     gap: 25px; /* space between cards and sort options */
+    margin: 30px;
 }
 
 .sort-controls {
-    background: #f1f3f6;
+    background: #eef2ff;
     padding: 25px;
-    text-align: left;
+    font-weight: 400;
     border-radius: 8px;
     width: 500px;
     height: fit-content;
     align-self: flex-start; /* keep it aligned to the top */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border: 1px solid #4453a6;
+    border-left: 5px solid #4453a6;
+    border-bottom: 5px solid #4453a6;
 }
 
 .lesson-card {
-    border: 1px solid #556094;
-    border-radius: 10px;
+    border: 1.5px solid #556094;
+    border-radius: 12px;
     padding: 15px;
-    margin: 10px;
-    width: 220px;
+    width: 240px;
     display: flex;  /* Flexible box layout */
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;  /* Space between text and icon */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lesson-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
 .lesson-icon {
@@ -70,7 +89,7 @@ header button:hover {
 }
 
 .lesson-details .fa-star, .lesson-details .far.fa-star {
-    color: gold;
+    color: #f0a535;
 }
 
 main {
@@ -84,18 +103,18 @@ main {
     margin-top: 6px;
     margin-bottom: 7px;
     padding: 6px 15px;
-    background-color: rgb(53, 128, 240);
+    background-color: #4453a6;
     border-radius: 5px;
     font-size: 90%;
     color: white;
     font-weight: bold;
     border: none;
-    box-shadow: 0 2px 5px rgba(75, 73, 74, 0.868);
+    box-shadow: 0 2px 4px rgba(75, 73, 74, 0.868);
     cursor: pointer;
 }
 
 #add2cart_button:hover {
-    background-color: rgb(4, 56, 134);    
+    background-color: #2f3c8f;  
 }
 
 #add2cart_button[disabled] {
@@ -128,20 +147,47 @@ p {
     border-radius:8px; 
     padding:10px; 
     display:flex; 
+    justify-content: space-between;
     gap:12px; 
     align-items:center; 
     margin:6px 0; 
+    background: white;
 }
 
-.cart-item button {
-  background: #e74a3b;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
-  cursor: pointer;
+.cart-page {
+    display: flex;
+    flex-direction: column; /* stack elements vertically */
+    align-items: center; /* center title and cards horizontally */
+    gap: 20px;
 }
 
-.cart-item button:hover {
+.cart-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.remove-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;   
+    background: #e74a3b;
+    color: white;
+    border: none;
+    margin-top: 7px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.remove-button i {
+    font-size: 14px;   
+}
+
+.remove-button:hover {
   background: #c0392b;
 }
