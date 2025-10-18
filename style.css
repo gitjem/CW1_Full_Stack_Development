@@ -4,7 +4,45 @@ body {
 }
 
 header {
-    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+header button {
+    background-color: #5768ba;
+    color: white;
+    border: none;
+    margin-bottom: 22px;
+    margin-right: 15px;
+    font-size: 15px;
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header button:hover {
+    background-color: #3e4a83;
+}
+
+.content-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 25px; /* space between cards and sort options */
+}
+
+.sort-controls {
+    background: #f1f3f6;
+    padding: 25px;
+    text-align: left;
+    border-radius: 8px;
+    width: 500px;
+    height: fit-content;
+    align-self: flex-start; /* keep it aligned to the top */
 }
 
 .lesson-card {
@@ -14,30 +52,37 @@ header {
     margin: 10px;
     width: 220px;
     display: flex;  /* Flexible box layout */
-    align-items: center; 
+    flex-direction: row;
+    align-items: flex-start;
     justify-content: space-between;  /* Space between text and icon */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-main {
-    display: flex;
-    flex-wrap: wrap;  /* Allow cards to wrap to next row */
-    gap: 15px;  
+.lesson-icon {
+    font-size: 60px;
+    color: #494949;
+    margin-right: 8px;
+    margin-top: 35px;
 }
 
 .lesson-details {
     flex: 1; /* Make text take available space */
 }
 
-.lesson-icon {
-    font-size: 60px;
-    color: #494949;
-    margin-left: 6px;
-    margin-right: 6px;
+.lesson-details .fa-star, .lesson-details .far.fa-star {
+    color: gold;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;  /* Allow cards to wrap to next row */
+    justify-content: center;
+    gap: 20px;
 }
 
 #add2cart_button {
-    margin-top: 10px;
+    margin-top: 6px;
+    margin-bottom: 7px;
     padding: 6px 15px;
     background-color: rgb(53, 128, 240);
     border-radius: 5px;
@@ -53,6 +98,50 @@ main {
     background-color: rgb(4, 56, 134);    
 }
 
+#add2cart_button[disabled] {
+    background:#9dbaf8; 
+    cursor:not-allowed; 
+}
+
+.stock-out {
+    color:red; 
+    font-weight:bold; 
+}
+
+.stock-low {
+    color:rgb(255, 102, 0);
+    font-weight:bold; 
+}
+
+.stock-full {
+    color:green; 
+    font-weight:bold; 
+}
+
 p {
     margin: 5px 0;
+}
+
+.cart-item { 
+    width:420px; 
+    border:1px solid #ddd; 
+    border-radius:8px; 
+    padding:10px; 
+    display:flex; 
+    gap:12px; 
+    align-items:center; 
+    margin:6px 0; 
+}
+
+.cart-item button {
+  background: #e74a3b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-item button:hover {
+  background: #c0392b;
 }

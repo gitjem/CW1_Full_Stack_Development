@@ -1,3 +1,13 @@
+<!-- CHANGES NEEDED:
+1. change font awesme icons into images
+3. Icon Cart number (coloured)
+4. sorting is right side in a box coloured maybe
+6. cart - the card and remove button (r with trash icon), quantity
+7. when cartis empty, have button enabled and option to go back
+8. order details
+9. header coloured
+ -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,48 +20,80 @@
     <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <!-- CSS style -->
     <link rel="stylesheet" href = "style.css">
+    <script src="lessons.js"></script>
 </head>
 <body>
     <!-- Mounting -->
     <div id="app">
         <header>
             <h1 v-text="sitename"></h1>
-        </header>
+            <button v-on:click="showShoppingCart" :disabled="cart.length === 0">
+                <span class="fas fa-cart-plus"></span>
+                Cart {{totalCartCount}}
+            </button>
+        </header>     
 
-        <!-- Sort controls -->
-        <div class="sort-controls">
-            <label>Sort by:</label>
-            <p><input type="radio" id="subject" value="subject" v-model="sortAttribute">
-            <label for="subject">Subject</label></p>
-            <p><input type="radio" id="location" value="location" v-model="sortAttribute">
-            <label for="location">Location</label></p>
-            <p><input type="radio" id="price" value="price" v-model="sortAttribute">
-            <label for="price">Price</label></p>
-            <p><input type="radio" id="spaces" value="spaces" v-model="sortAttribute">
-            <label for="spaces">Spaces</label></p>
-        <br>
-            <label>Order by:</label>
-            <p><input type="radio" id="ascending" value="asc" v-model="sortOrder">
-            <label for="ascending">Ascending</label></p>
-            <p><input type="radio" id="descending" value="desc" v-model="sortOrder">
-            <label for="descending">Descending</label></p>
-        </div>
+        <div class="content-wrap" v-if="showProduct">
+            <!-- Sort controls -->
+            <div class="sort-controls" v-if="showProduct">
+                <label>Sort by:</label>
+                <p><input type="radio" id="subject" value="subject" v-model="sortAttribute"><label for="subject">Subject</label></p>
+                <p><input type="radio" id="location" value="location" v-model="sortAttribute"><label for="location">Location</label></p>
+                <p><input type="radio" id="price" value="price" v-model="sortAttribute"><label for="price">Price</label></p>
+                <p><input type="radio" id="spaces" value="spaces" v-model="sortAttribute"><label for="spaces">Spaces</label></p>
+                <br>
+                <label>Order by:</label>
+                <p><input type="radio" id="ascending" value="asc" v-model="sortOrder"><label for="ascending">Ascending</label></p>
+                <p><input type="radio" id="descending" value="desc" v-model="sortOrder"><label for="descending">Descending</label></p>
+            </div>
 
-        <main>
             <!-- Loop through lessons -->
-            <div v-for="(lesson, index) in sortedLessons" :key="index" class="lesson-card">
-                <div class="lesson-details">
-                    <p>Subject: {{lesson.subject}}</p>
-                    <p>Location: {{lesson.location}}</p>
-                    <p>Price: {{lesson.price}}</p>
-                    <p>Spaces left: {{lesson.spaces}}</p>
-                    <button v-on:click="addToCart(lesson)" v-if="canAddToCart(lesson)" id="add2cart_button">Add to Cart</button>
-                    <button disabled="disabled" v-else >Add to Cart</button>
+            <main>
+                <div v-for="lesson in sortedLessons" :key="lesson.id" class="lesson-card">
+                    <div class="lesson-details">
+                        <p>Subject: {{lesson.subject}}</p>
+                        <p>Location: {{lesson.location}}</p>
+                        <p>Price: £{{lesson.price}}</p>
+                        <p>Spaces left: {{lesson.spaces}}</p>               
+
+                        <button v-on:click="addToCart(lesson)" v-if="canAddToCart(lesson)" id="add2cart_button">Add to Cart</button>
+                        <button disabled="disabled" v-else >Add to Cart</button>
+
+                        <div>
+                            <span v-if="itemsLeft(lesson) === 0" class="stock-out">Out of Stock!</span>
+                            <span v-else-if="itemsLeft(lesson) < 5" class="stock-low">Only {{itemsLeft(lesson)}} left!</span>
+                            <span v-else class="stock-full">Buy Now!</span>
+                        </div>
+                        
+                        <div>
+                            <span v-for="n in lesson.rating"><i class="fas fa-star"></i></span><span v-for="n in 5 - lesson.rating"><i class="far fa-star"></i></span>
+                        </div>                
+                    </div> 
+                    <div class="lesson-icon">
+                        <i :class="lesson.icon"></i>
+                    </div>
                 </div>
-                <div class="lesson-icon">
-                    <i :class="lesson.icon"></i>
+            </main>                       
+        </div>
+        
+        <!-- Show Cart Page if show Product is false -->
+        <main v-else>
+            <h2>Shopping Cart</h2>
+            <div v-if="cart.length > 0">
+                <div v-for="(cartItem, index) in cart" :key="cartItem.id" class="lesson-card">
+                    <div class="lesson-details">
+                        <p>Subject: {{getLesson(cartItem.id).subject}}</p>
+                        <p>Location: {{getLesson(cartItem.id).location}}</p>
+                        <p>Price: £{{getLesson(cartItem.id).price}}</p>
+                        <p>Quantity: {{cartItem.qty}}</p>    
+                        <button v-on:click="removeFromCart(index)">Remove</button>  
+                    </div> 
+                    <div class="lesson-icon">
+                        <i :class="getLesson(cartItem.id).icon"></i>
+                    </div>            
                 </div>
             </div>
+            <p v-else>Your cart is empty.</p>
         </main>
     </div>
 
@@ -63,31 +105,50 @@
                 sitename: 'After School Club',
                 sortAttribute: 'subject', //set to default
                 sortOrder: 'asc',
-                lessons: [
-                    { subject: "Math", location: "London", price: 100, spaces: 5, icon: "fas fa-calculator" },
-                    { subject: "Science", location: "Birmingham", price: 120, spaces: 5, icon: "fas fa-flask" },
-                    { subject: "English", location: "Oxford", price: 90, spaces: 5, icon: "fas fa-feather-alt" },
-                    { subject: "History", location: "London", price: 80, spaces: 5, icon: "fas fa-landmark" },
-                    { subject: "Geography", location: "Liverpool", price: 95, spaces: 5, icon: "fas fa-globe" },
-                    { subject: "Art", location: "York", price: 70, spaces: 5, icon: "fas fa-paint-brush" },
-                    { subject: "Music", location: "Bristol", price: 110, spaces: 5, icon: "fas fa-music" },
-                    { subject: "Computer Science", location: "Oxford", price: 150, spaces: 5, icon: "fas fa-laptop-code" },
-                    { subject: "Drama", location: "Cambridge", price: 85, spaces: 5, icon: "fas fa-theater-masks" },
-                    { subject: "Physical Education", location: "Bristol", price: 60, spaces: 5, icon: "fas fa-basketball-ball" }
-                    ],
-                cart : []
+                lessons: lessons,
+                cart : [],
+                showProduct: true
                 },
 
                 methods: {
-                addToCart: function(lesson){
-                    if (lesson.spaces > 0){
-                        lesson.spaces -- // decrement available space
-                        this.cart.push(lesson.subject)                        
-                    }},
-                  canAddToCart: function(lesson){
-                    return lesson.spaces > 0
-                    }
+                    addToCart: function(lesson){
+                        if (lesson.spaces > 0){
+                            lesson.spaces -- // decrement available space
+                        const existing = this.cart.find((item) => item.id === lesson.id);
+                            if (existing) {
+                            existing.qty++;
+                            } else {
+                            this.cart.push({ id: lesson.id, qty: 1 });
+                            }
+                        }
+                    },
+                    canAddToCart: function(lesson){
+                        return lesson.spaces > 0
+                    },
+                    showShoppingCart: function(){
+                        // Ternary Operator which toggle b/w true and false so when its true change to false
+                        if (this.cart.length > 0){
+                        this.showProduct = this.showProduct ? false : true}
+                    },
+                    removeFromCart(index) {
+                        const cartItem = this.cart[index];
+                        if (!cartItem) return;
+                        const lesson = this.getLesson(cartItem.id);
+                        if (lesson) lesson.spaces++;
+                        if (cartItem.qty > 1) {
+                            cartItem.qty--;
+                        } else {
+                        this.cart.splice(index, 1); // remove one item with that index
+                        }
+                    },
+                    itemsLeft(lesson){
+                        return lesson.spaces
+                    },
+                    getLesson(id) {
+                        return this.lessons.find(item => item.id === id) || {};
+                    },
                 },
+
                 computed: {
                     sortedLessons() {
                     // Copy lessons array for sorting
@@ -108,9 +169,16 @@
                         if (valueA > valueB) return this.sortOrder === 'asc' ? 1 : -1;
                         return 0;
                         });
-                    }
+                    },                    
+                    totalCartCount(){
+                        let total = 0;
+                        for (let i = 0; i < this.cart.length; i++) {
+                            total += this.cart[i].qty;
+                        }
+                        return total;
+                    },                
                 }
-     });
+            });
     </script>
 </body>
 </html>
