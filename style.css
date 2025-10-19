@@ -191,3 +191,26 @@ p {
 .remove-button:hover {
   background: #c0392b;
 }
+
+.empty-cart {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.back-button {
+    background-color: #5768ba;
+    color: white;
+    border: none;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    transition: background 0.2s;
+}
+
+.back-button:hover {
+    background-color: #3e4a83;
+}

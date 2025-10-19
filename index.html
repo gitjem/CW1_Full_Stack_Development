@@ -93,7 +93,12 @@
                     </div>            
                 </div>
             </div>
-            <p v-else>Your cart is empty.</p>
+            <div v-else class="empty-cart">
+                <p>Your cart is empty.</p>
+                <button class="back-button" v-on:click="goBackToProducts">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </button>
+            </div>
         </main>
     </div>
 
@@ -146,6 +151,9 @@
                     },
                     getLesson(id) {
                         return this.lessons.find(item => item.id === id) || {};
+                    },
+                    goBackToProducts() {
+                        this.showProduct = true;
                     },
                 },
 
