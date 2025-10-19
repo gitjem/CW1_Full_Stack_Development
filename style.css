@@ -159,13 +159,31 @@ p {
     flex-direction: column; /* stack elements vertically */
     align-items: center; /* center title and cards horizontally */
     gap: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.cart-page h2 {
+    color: #2b3a8f;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #4453a6;
+    padding-bottom: 10px;
+    text-align: center;
 }
 
 .cart-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
+}
+
+.empty-cart p {
+    font-size: 18px;
+    color: #1c1c1c;
+    font-weight: 600;
 }
 
 .remove-button {
@@ -198,8 +216,8 @@ p {
 }
 
 .back-button {
-    background-color: #5768ba;
-    color: white;
+    background-color: #f0a535;
+    color: black;
     border: none;
     margin-top: 10px;
     padding: 10px 20px;
@@ -207,10 +225,12 @@ p {
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    transition: background 0.2s;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
 .back-button:hover {
-    background-color: #3e4a83;
+    background-color: #e18e11;
+    transform: scale(1.05);
+
 }
