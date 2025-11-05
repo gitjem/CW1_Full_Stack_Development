@@ -24,6 +24,11 @@
     <div id="app">
         <header>
             <h1 v-text="sitename"></h1>
+            <div class="search-bar">
+                <input type="text" v-model="searchQuery" placeholder="Search..." v-on:input="searchLessons">
+                <button v-on:click="searchLessons"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="results"></div>
             <button v-on:click="showShoppingCart" :disabled="cart.length === 0">
                 <span class="fas fa-cart-plus"></span>
                 Cart <span class="cart-count">{{totalCartCount}}</span>
@@ -172,6 +177,7 @@
                 submittedOrder: {},
                 submittedTotal: 0,
                 orderSubmitted: false,
+                searchQuery: '',
                 showProduct: true
                 },
 
@@ -226,6 +232,15 @@
                         this.order = { firstName: '', lastName: '', phone: '' };
                     } else {
                         alert("Please fill out all fields correctly before checking out!");}  
+                    },
+                    async searchLessons() {
+                        try {
+                        const response = await fetch(`http://localhost:3000/search?query=${this.searchQuery}`);
+                        const data = await response.json();
+                        this.lessons = data;  // update lessons with filtered ones
+                        } catch (error) {
+                        console.error('Search failed:', error);
+                        }
                     },
                 },
 
