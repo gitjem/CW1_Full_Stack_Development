@@ -1,7 +1,6 @@
 <!-- CHANGES NEEDED:
 1. change font awesme icons into images
-8. order details
-         
+5. can add more order details from vue.js pet depot  
 -->
 
 
@@ -28,7 +27,6 @@
                 <input type="text" v-model="searchQuery" placeholder="Search..." v-on:input="searchLessons">
                 <button v-on:click="searchLessons"><i class="fas fa-search"></i></button>
             </div>
-            <div id="results"></div>
             <button v-on:click="showShoppingCart" :disabled="cart.length === 0">
                 <span class="fas fa-cart-plus"></span>
                 Cart <span class="cart-count">{{totalCartCount}}</span>
@@ -49,8 +47,13 @@
                 <p><input type="radio" id="descending" value="desc" v-model="sortOrder"><label for="descending">Descending</label></p>
             </div>
 
-            <!-- Loop through lessons -->
             <main>
+                <!-- No results message -->
+                <div v-if="lessons.length === 0" class="no-results">
+                    No results found.
+                </div>
+
+                <!-- Loop through lessons -->
                 <div v-for="lesson in sortedLessons" :key="lesson.id" class="lesson-card">
                     <div class="lesson-details">
                         <p>Subject: {{lesson.subject}}</p>
