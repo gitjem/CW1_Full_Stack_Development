@@ -16,7 +16,13 @@
     <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <!-- CSS style -->
     <link rel="stylesheet" href = "style.css">
-    <script src="lessons.js"></script>
+    <!-- Fetch lessons from mongodb -->
+    <script>
+        fetch("http://localhost:3000/lessons")
+            .then(res => res.json())
+            .then(data => { webstore.lessons = data });
+    </script>
+
 </head>
 <body>
     <!-- Mounting -->
@@ -142,22 +148,53 @@
                         <button v-on:click="checkout" :disabled="!isValidOrder"  class="checkout-button">
                         Checkout
                     </button>
-                </div>                         
-            
-            <div v-else class="confirmation">
-                <h3>Order Submitted!</h3>
-                <div class="confirmation-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>                    
-                <p>Your order has been confirmed.</p>               
+                </div>   
                 
-                <div class="order-info">
-                    <h4>Order Information:</h4>
-                    <p><strong>First Name:</strong> {{ submittedOrder.firstName }}</p>
-                    <p><strong>Last Name:</strong> {{ submittedOrder.lastName }}</p>
-                    <p><strong>Phone Number:</strong> {{ submittedOrder.phone }}</p>
-                    <p><strong>Total Price:</strong>  £{{ submittedTotal }}</p>    
-                </div>                             
+                <div v-else class="confirmation">
+                    <div class="confirmation-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+
+                    <h3>Order Confirmed!</h3>
+                    <p>Your order has been successfully submitted. Details are below:</p>
+
+                    <div class="order-info">
+                        <h4>Order Details</h4>
+
+                        <div class="order-items-grid">
+                            <div class="order-item-label">First Name:</div>
+                            <div class="order-item-value">{{ submittedOrder.firstName }}</div>
+
+                            <div class="order-item-label">Last Name:</div>
+                            <div class="order-item-value">{{ submittedOrder.lastName }}</div>
+
+                            <div class="order-item-label">Phone Number:</div>
+                            <div class="order-item-value">{{ submittedOrder.phone }}</div>
+                        </div>
+
+                        <h4 style="margin-top: 20px;">Lessons Ordered</h4>
+
+                        <!-- Loop through lesson details -->
+                        <div class="lesson-item-grid" v-for="item in submittedOrder.items" :key="item.id">
+
+                            <div class="order-item-label">Subject:</div>
+                            <div class="order-item-value">{{ item.subject }}</div>
+
+                            <div class="order-item-label">Location:</div>
+                            <div class="order-item-value">{{ item.location }}</div>
+
+                            <div class="order-item-label">Price:</div>
+                            <div class="order-item-value">£{{ item.price }}</div>
+
+                            <div class="order-item-label">Quantity:</div>
+                            <div class="order-item-value">{{ item.qty }}</div>
+                        </div>
+
+                        <div class="order-total">
+                            Total: £{{ submittedTotal }}
+                        </div>
+                    </div>
+                </div>
             </div> 
         </main>
     </div>
@@ -170,7 +207,7 @@
                 sitename: 'After School Club',
                 sortAttribute: 'subject', //set to default
                 sortOrder: 'asc',
-                lessons: lessons,
+                lessons: [],
                 cart : [],
                 order: {
                     firstName: '',
@@ -182,6 +219,12 @@
                 orderSubmitted: false,
                 searchQuery: '',
                 showProduct: true
+                },
+
+                mounted() {
+                    fetch("http://localhost:3000/lessons")
+                        .then(res => res.json())
+                        .then(data => { this.lessons = data });
                 },
 
                 methods: {
@@ -225,22 +268,66 @@
                         this.showProduct = true;
                         this.orderSubmitted = false;
                     },
-                    checkout() {
-                    if (this.isValidOrder) {
-                        this.submittedOrder = { ...this.order }; // order object copy - spread operator (...) in JS makes new order object
-                        this.submittedTotal = this.totalPrice;
-                        this.orderSubmitted = true;
-                        alert(`Order submitted successfully! Thank you, ${this.order.firstName}!`);
-                        this.cart = [];
-                        this.order = { firstName: '', lastName: '', phone: '' };
-                    } else {
-                        alert("Please fill out all fields correctly before checking out!");}  
+                    applyCartSpaces() {
+                        for (const item of this.cart) {
+                            const lesson = this.lessons.find(l => l.id === item.id);
+                            if (lesson) {
+                                lesson.spaces -= item.qty;
+                            }
+                        }
                     },
+                    async checkout() {
+                        if (!this.isValidOrder) {
+                            alert("Please fill out all fields correctly before checking out!");
+                            return;
+                        }
+
+                        const cartItemsWithDetails = this.cart.map(item => {
+                            const lesson = this.getLesson(item.id);
+                            return {
+                                id: item.id,
+                                subject: lesson.subject,
+                                location: lesson.location,
+                                price: lesson.price,
+                                spaces: lesson.spaces,
+                                qty: item.qty
+                            };
+                        });
+                        
+                        try {
+                            const response = await fetch("http://localhost:3000/order", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    firstName: this.order.firstName,
+                                    lastName: this.order.lastName,
+                                    phone: this.order.phone,
+                                    cartItems: cartItemsWithDetails
+                                })
+                            });
+
+                            const result = await response.json();
+                            alert(result.message);
+
+                            this.submittedOrder = { ...this.order, items: cartItemsWithDetails };
+                            this.submittedTotal = this.totalPrice;
+                            this.orderSubmitted = true;
+
+                            this.cart = [];
+                            this.order = { firstName: "", lastName: "", phone: "" };
+
+                        } catch (err) {
+                            console.error("Checkout error:", err);
+                            alert("Failed to submit order.");
+                        }
+                    },
+
                     async searchLessons() {
                         try {
                         const response = await fetch(`http://localhost:3000/search?query=${this.searchQuery}`);
                         const data = await response.json();
                         this.lessons = data;  // update lessons with filtered ones
+                        this.applyCartSpaces();
                         } catch (error) {
                         console.error('Search failed:', error);
                         }

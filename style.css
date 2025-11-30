@@ -404,50 +404,85 @@ p {
 
 /* Order Details Section */
 .confirmation {
+    max-width: 750px;
+    margin: 20px auto;
+    padding: 22px 28px;
+    background: #ffffff;
+    border-radius: 16px;
     text-align: center;
-    padding: 20px;
-    background: #f9fff9;
-    border: 2px solid #b6e2b6;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .confirmation-icon {
     font-size: 70px;
     color: #3cb371;
-}
-
-.confirmation h3 {
-    color: #2e7d32;
-    font-size: 26px;
-    margin-top: 10px;
-}
-
-.confirmation p {
-    color: #333;
-    margin-bottom: 15px;
-}
-
-.order-info {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 10px 20px;
-    text-align: left;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.order-info h4 {
-    color: #2b3a8f;
-    border-bottom: 2px solid #b6e2b6;
-    padding-bottom: 5px;
     margin-bottom: 10px;
 }
 
-.order-info p {
-    margin: 5px 0;
-    font-size: 15px;
+.confirmation h3 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #2e7d32;
+    margin-bottom: 8px;
 }
 
+.confirmation p {
+    color: #444;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
 
+.order-info {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 22px 26px;
+    text-align: left;
+    border: 1px solid #e3e7ee40;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-top: 20px;
+}
 
+.order-info h4 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a2b6d;
+    margin-bottom: 15px;
+}
 
+.order-items-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    column-gap: 12px;
+    row-gap: 6px;
+    margin-bottom: 10px;
+}
+
+.lesson-item-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    column-gap: 10px;
+    row-gap: 6px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #cfdad3; 
+}
+
+.order-item-label {
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+}
+
+.order-item-value {
+    color: #333;
+    text-align: left;
+    word-break: break-word;
+}
+
+.order-total {
+    margin-top: 20px;
+    padding-top: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2e7d32;
+    text-align: right;
+}
