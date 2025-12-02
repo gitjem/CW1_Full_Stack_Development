@@ -1,9 +1,3 @@
-<!-- CHANGES NEEDED:
-1. change font awesme icons into images
-5. can add more order details from vue.js pet depot  
--->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,7 +75,7 @@
                         </div>                
                     </div> 
                     <div class="lesson-icon">
-                        <i :class="lesson.icon"></i>
+                         <img :src="'http://localhost:3000/images/' + lesson.icon" :alt="lesson.subject">
                     </div>
                 </div>
             </main>                       
@@ -100,7 +94,7 @@
                         <button v-on:click="removeFromCart(index)" class="remove-button"><i class="fas fa-trash-alt"></i> Remove </button>  
                     </div> 
                     <div class="lesson-icon">
-                        <i :class="getLesson(cartItem.id).icon"></i>
+                         <img :src="'http://localhost:3000/images/' + getLesson(cartItem.id).icon" :alt="getLesson(cartItem.id).subject">
                     </div>
                 </div>
             </div>
@@ -291,7 +285,7 @@
                                 price: lesson.price,
                                 spaces: lesson.spaces,
                                 qty: item.qty
-                            };
+                            };                 
                         });
                         
                         try {
@@ -308,6 +302,15 @@
 
                             const result = await response.json();
                             alert(result.message);
+
+                            // Update spaces after order submitted
+                            for (const item of cartItemsWithDetails) {
+                                await fetch(`http://localhost:3000/lessons/${item.id}`, {
+                                    method: "PUT",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ spaces: item.spaces }) 
+                                });
+                            }
 
                             this.submittedOrder = { ...this.order, items: cartItemsWithDetails };
                             this.submittedTotal = this.totalPrice;

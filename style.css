@@ -168,9 +168,10 @@ header button:hover {
     box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
-.lesson-icon {
-    font-size: 60px;
-    color: #494949;
+.lesson-icon img {
+    width: 80px;
+    height: 80px;
+    opacity: 0.6;
     margin-right: 8px;
     margin-top: 25px;
 }
