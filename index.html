@@ -10,11 +10,9 @@
     <link rel="stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <!-- CSS style -->
     <link rel="stylesheet" href = "style.css">
-    <!-- Fetch lessons from mongodb -->
+    <!-- Render backend url -->
     <script>
-        fetch("http://localhost:3000/lessons")
-            .then(res => res.json())
-            .then(data => { webstore.lessons = data });
+        const API_URL = "https://cw1-backend-nnsd.onrender.com"
     </script>
 
 </head>
@@ -75,7 +73,7 @@
                         </div>                
                     </div> 
                     <div class="lesson-icon">
-                         <img :src="'http://localhost:3000/images/' + lesson.icon" :alt="lesson.subject">
+                        <img :src="`${API_URL}/images/${lesson.icon}`" :alt="lesson.subject">
                     </div>
                 </div>
             </main>                       
@@ -94,7 +92,7 @@
                         <button v-on:click="removeFromCart(index)" class="remove-button"><i class="fas fa-trash-alt"></i> Remove </button>  
                     </div> 
                     <div class="lesson-icon">
-                         <img :src="'http://localhost:3000/images/' + getLesson(cartItem.id).icon" :alt="getLesson(cartItem.id).subject">
+                        <img :src="`${API_URL}/images/${getLesson(cartItem.id).icon}`" :alt="getLesson(cartItem.id).subject">
                     </div>
                 </div>
             </div>
@@ -216,7 +214,8 @@
                 },
 
                 mounted() {
-                    fetch("http://localhost:3000/lessons")
+                    // Fetch lessons from mongodb 
+                    fetch(`${API_URL}/lessons`)
                         .then(res => res.json())
                         .then(data => { this.lessons = data });
                 },
@@ -289,7 +288,7 @@
                         });
                         
                         try {
-                            const response = await fetch("http://localhost:3000/order", {
+                            const response = await fetch(`${API_URL}/order`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
@@ -305,10 +304,10 @@
 
                             // Update spaces after order submitted
                             for (const item of cartItemsWithDetails) {
-                                await fetch(`http://localhost:3000/lessons/${item.id}`, {
+                                await fetch(`${API_URL}/lessons/${item.id}`, {
                                     method: "PUT",
                                     headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ spaces: item.spaces }) 
+                                    body: JSON.stringify({ spaces: this.getLesson(item.id).spaces })
                                 });
                             }
 
@@ -327,7 +326,7 @@
 
                     async searchLessons() {
                         try {
-                        const response = await fetch(`http://localhost:3000/search?query=${this.searchQuery}`);
+                        const response = await fetch(`${API_URL}/search?query=${this.searchQuery}`);
                         const data = await response.json();
                         this.lessons = data;  // update lessons with filtered ones
                         this.applyCartSpaces();
